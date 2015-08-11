@@ -90,12 +90,36 @@ class Parser
     end
   end
 
+  def single_party
+    area = ''
+    party = 'Cumhuriyet Halk Partisi'
+    noko.xpath(".//table[.//th[1][contains(.,'Seçim Bölgesi')]][1]/tr[td]").map do |tr|
+      tds = tr.css('td')
+      if tds.count == 2
+        area = tds[0].text 
+        namecol = 1
+      else
+        namecol = 0
+      end
+      name  = ->(col) { tds[col].css('a').first.text.tidy }
+      title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
+      data = {
+        name: name.(namecol),
+        wikipedia__tk: title.(namecol),
+        party: party,
+        area: area,
+      }
+      data
+    end
+  end
+
 end
 
 terms = {
   by_area: [ 25, 17 ],
   four_column: [ 24 ],
-  three_column: [ 22, 21, 20, 19, 18, 16, 15, 14 ],
+  three_column: [ 22, 21, 20, 19, 18, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
+  single_party: [ 7 ]
 }
 
 terms.each do |meth, ts|
