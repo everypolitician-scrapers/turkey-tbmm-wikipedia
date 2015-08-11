@@ -27,7 +27,7 @@ class Parser
     @noko ||= Nokogiri::HTML(open(@url).read)
   end
 
-  def scrape25
+  def by_area
     noko.xpath(".//table[.//th[2][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
       tds = tr.css('td')
       {
@@ -40,7 +40,7 @@ class Parser
   end
 
   # Four column: Area (spanned), Name, Colour (spanned), Party (spanned)
-  def scrape24
+  def four_column
     area = party = ''
     noko.xpath(".//table[.//th[3][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
       tds = tr.css('td')
@@ -66,9 +66,9 @@ class Parser
   end
 
   # Three column: Area (spanned), Name, Party (unspanned)
-  def scrape23
+  def three_column
     area = party = ''
-    noko.xpath(".//table[.//th[3][contains(.,'Siyasi parti')]]/tr[td]").map do |tr|
+    noko.xpath(".//table[.//th[3][contains(.,'Siyasi parti')]][1]/tr[td]").map do |tr|
       tds = tr.css('td')
       if tds.count == 3
         area = tds[0].text 
@@ -80,29 +80,28 @@ class Parser
       end
       name  = ->(col) { tds[col].css('a').first.text.tidy }
       title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
-      {
+      data = {
         name: name.(namecol),
         wikipedia__tk: title.(namecol),
         party: party,
         area: area,
       }
+      data
     end
   end
 
 end
 
 terms = {
-  25 => [ 'https://tr.wikipedia.org/wiki/TBMM_25._d%C3%B6nem_milletvekilleri_listesi', 'scrape25' ],
-  24 => [ 'https://tr.wikipedia.org/wiki/TBMM_24._d%C3%B6nem_milletvekilleri_listesi', 'scrape24' ],
-  23 => [ 'https://tr.wikipedia.org/wiki/TBMM_23._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
-  22 => [ 'https://tr.wikipedia.org/wiki/TBMM_22._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
-  21 => [ 'https://tr.wikipedia.org/wiki/TBMM_21._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
-  20 => [ 'https://tr.wikipedia.org/wiki/TBMM_20._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
-  19 => [ 'https://tr.wikipedia.org/wiki/TBMM_19._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
-  18 => [ 'https://tr.wikipedia.org/wiki/TBMM_18._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
+  by_area: [ 25, 17 ],
+  four_column: [ 24 ],
+  three_column: [ 22, 21, 20, 19, 18, 16, 15, 14 ],
 }
 
-terms.each do |t, i|
-  data = Parser.new(url: i.first).send(i.last).map { |m| m.merge(term: t, source: i.first) }
-  puts data
+terms.each do |meth, ts|
+  ts.each do |t|
+    url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
+    data = Parser.new(url: url).send(meth).map { |m| m.merge(term: t, source: url) }
+    puts data
+  end
 end
