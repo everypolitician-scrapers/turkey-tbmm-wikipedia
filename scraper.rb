@@ -113,6 +113,10 @@ class Parser
 
 end
 
+def id_for(m)
+  [m[:wikipedia__tk], m[:name]].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/,'_')
+end
+
 terms = {
   by_area: [ 25, 17 ],
   four_column: [ 24 ],
@@ -125,8 +129,8 @@ terms.each do |meth, ts|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
     url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_1._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 1
     warn url
-    data = Parser.new(url: url).send(meth).map { |m| m.merge(term: t, source: url) }
+    data = Parser.new(url: url).send(meth).map { |m| m.merge(term: t, source: url, id: id_for(m)) }
     # data.find_all { |m| m[:name][/[0-9]/] }.each { |m| puts m.to_s.magenta }
-    ScraperWiki.save_sqlite([:name, :area, :term], data)
+    ScraperWiki.save_sqlite([:id, :area, :term], data)
   end
 end
