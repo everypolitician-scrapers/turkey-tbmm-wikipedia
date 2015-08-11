@@ -80,13 +80,12 @@ class Parser
       end
       name  = ->(col) { tds[col].css('a').first.text.tidy }
       title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
-      data = {
+      {
         name: name.(namecol),
         wikipedia__tk: title.(namecol),
         party: party,
         area: area,
       }
-      data
     end
   end
 
@@ -103,13 +102,12 @@ class Parser
       end
       name  = ->(col) { tds[col].css('a').first.text.tidy }
       title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
-      data = {
+      {
         name: name.(namecol),
         wikipedia__tk: title.(namecol),
         party: party,
         area: area,
       }
-      data
     end
   end
 
@@ -119,13 +117,16 @@ terms = {
   by_area: [ 25, 17 ],
   four_column: [ 24 ],
   three_column: [ 22, 21, 20, 19, 18, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
-  single_party: [ 7 ]
+  single_party: [ 7, 6, 5, 4, 3, 2, 1 ],
 }
 
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
+    url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_1._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 1
+    warn url
     data = Parser.new(url: url).send(meth).map { |m| m.merge(term: t, source: url) }
+    # data.find_all { |m| m[:name][/[0-9]/] }.each { |m| puts m.to_s.magenta }
     puts data
   end
 end
