@@ -127,6 +127,6 @@ terms.each do |meth, ts|
     warn url
     data = Parser.new(url: url).send(meth).map { |m| m.merge(term: t, source: url) }
     # data.find_all { |m| m[:name][/[0-9]/] }.each { |m| puts m.to_s.magenta }
-    puts data
+    ScraperWiki.save_sqlite([:name, :area, :term], data)
   end
 end
