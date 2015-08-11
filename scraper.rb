@@ -95,6 +95,11 @@ terms = {
   25 => [ 'https://tr.wikipedia.org/wiki/TBMM_25._d%C3%B6nem_milletvekilleri_listesi', 'scrape25' ],
   24 => [ 'https://tr.wikipedia.org/wiki/TBMM_24._d%C3%B6nem_milletvekilleri_listesi', 'scrape24' ],
   23 => [ 'https://tr.wikipedia.org/wiki/TBMM_23._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
+  22 => [ 'https://tr.wikipedia.org/wiki/TBMM_22._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
+  21 => [ 'https://tr.wikipedia.org/wiki/TBMM_21._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
+  20 => [ 'https://tr.wikipedia.org/wiki/TBMM_20._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
+  19 => [ 'https://tr.wikipedia.org/wiki/TBMM_19._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
+  18 => [ 'https://tr.wikipedia.org/wiki/TBMM_18._d%C3%B6nem_milletvekilleri_listesi', 'scrape23' ],
 }
 
 terms.each do |t, i|
