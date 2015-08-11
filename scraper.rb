@@ -39,10 +39,36 @@ class Parser
     end
   end
 
+  def scrape24
+    area = party = ''
+    noko.xpath(".//table[.//th[3][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
+      tds = tr.css('td')
+      if tds.count == 4
+        area = tds[0].text 
+        namecol = 1
+        party = tds[3].text 
+      elsif tds.count == 3
+        namecol = 0
+        party = tds[2].text
+      elsif tds.count == 1
+        namecol = 0
+      end
+      name  = ->(col) { tds[col].css('a').first.text.tidy }
+      title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
+      {
+        name: name.(namecol),
+        wikipedia__tk: title.(namecol),
+        party: party,
+        area: area,
+      }
+    end
+  end
+
 end
 
 terms = {
   25 => [ 'https://tr.wikipedia.org/wiki/TBMM_25._d%C3%B6nem_milletvekilleri_listesi', 'scrape25' ],
+  24 => [ 'https://tr.wikipedia.org/wiki/TBMM_24._d%C3%B6nem_milletvekilleri_listesi', 'scrape24' ],
 }
 
 terms.each do |t, i|
