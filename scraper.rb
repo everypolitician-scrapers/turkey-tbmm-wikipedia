@@ -33,8 +33,8 @@ class Parser
       {
         name: tds[0].css('a').first.text.tidy,
         wikipedia__tk: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
-        party: tds[1].text.tidy,
         area: tr.xpath('preceding::h2/span[@class="mw-headline"]').last.text,
+        party: tds[1].xpath('.//text()').first.text.tidy,
       }
     end
   end
@@ -59,8 +59,8 @@ class Parser
       {
         name: name.(namecol),
         wikipedia__tk: title.(namecol),
-        party: party,
         area: area,
+        party: party,
       }
     end
   end
@@ -71,20 +71,20 @@ class Parser
     noko.xpath(".//table[.//th[3][contains(.,'Siyasi parti')]][1]/tr[td]").map do |tr|
       tds = tr.css('td')
       if tds.count == 3
-        area = tds[0].text 
+        area = tds[0].text  
         namecol = 1
-        party = tds[2].text 
+        party = tds[2].xpath('.//text()').first.text.tidy
       elsif tds.count == 2
         namecol = 0
-        party = tds[1].text
+        party = tds[1].xpath('.//text()').first.text.tidy
       end
       name  = ->(col) { tds[col].css('a').first.text.tidy }
       title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
       {
         name: name.(namecol),
         wikipedia__tk: title.(namecol),
-        party: party,
         area: area,
+        party: party,
       }
     end
   end
@@ -105,8 +105,8 @@ class Parser
       {
         name: name.(namecol),
         wikipedia__tk: title.(namecol),
-        party: party,
         area: area,
+        party: party,
       }
     end
   end
@@ -124,13 +124,55 @@ terms = {
   single_party: [ 7, 6, 5, 4, 3, 2, 1 ],
 }
 
+PARTY = { 
+  AKP: ['Adalet ve Kalkınma Partisi'],
+  ANAP: ['Anavatan Partisi'],
+  AP:  ['Adalet Partisi'],
+  BBP: ['Büyük Birlik Partisi'],
+  CGP: ['Cumhuriyetçi Güven Partisi', 'Güven Partisi'],
+  CHP: ['Cumhuriyet Halk Partisi'],
+  CKMP: ['Cumhuriyetçi Köylü Millet Partisi'],
+  CMP: ['Cumhuriyetçi Millet Partisi'],
+  DP46: ['Demokrat Parti'],
+  DP70: ['Demokratik Parti'],
+  DSP: ['Demokratik Sol Parti'],
+  DTP: ['Demokratik Türkiye Partisi'], 
+  DYP: ['Doğru Yol Partisi'],
+  FP:  ['Fazilet Partisi'],
+  HDP: ['Halkların Demokratik Partisi'],
+  HP:  ['Halkçı Parti'],
+  HP55:  ['Hürriyet Partisi'],
+  MDP: ['Milliyetçi Demokrasi Partisi'],
+  MHP: ['Milliyetçi Hareket Partisi'],
+  MÇP: ['Milliyetçi Çalışma Partisi'],
+  MP:  ['Millet Partisi'],
+  MSP: ['Millî Selamet Partisi', 'Milli Selamet Partisi'],
+  RP:  ['Refah Partisi'],
+  SHP: ['Sosyaldemokrat Halkçı Parti', 'Sosyal Demokrat Halkçı Parti'],
+  TBP: ['Türkiye Birlik Partisi', 'Birlik Partisi'],
+  TİP: ['Türkiye İşçi Partisi'],
+  YTP: ['Yeni Türkiye Partisi'],
+  ind: ['Bağımsız'],
+}
+
+WARNED = Set.new
+def party_from(party)
+  found = PARTY.find { |id, ns| ns.include? party }
+  { 
+    party_id: found.first.to_s,
+    party: found.last.first,
+  }
+end
+
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
     url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_1._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 1
     warn url
-    data = Parser.new(url: url).send(meth).map { |m| m.merge(term: t, source: url, id: id_for(m)) }
-    # data.find_all { |m| m[:name][/[0-9]/] }.each { |m| puts m.to_s.magenta }
+    data = Parser.new(url: url).send(meth).map { |m| 
+      m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m)) 
+    }
+    data.find_all { |m| m[:party][/[0-9]/] }.each { |m| puts m.to_s.magenta }
     ScraperWiki.save_sqlite([:id, :area, :term], data)
   end
 end
