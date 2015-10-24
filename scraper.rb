@@ -42,7 +42,10 @@ class Parser
   # Four column: Area (spanned), Name, Colour (spanned), Party (spanned)
   def four_column
     area = party = ''
-    noko.xpath(".//table[.//th[3][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
+    rows = noko.xpath(".//table[.//th[contains(.,'Siyasi')]]/tr[td]")
+    raise "No rows" if rows.count.zero?
+    rows.map do |tr|
+      next if tr.text.to_s.empty?
       tds = tr.css('td')
       if tds.count == 4
         area = tds[0].text 
@@ -51,10 +54,12 @@ class Parser
       elsif tds.count == 3
         namecol = 0
         party = tds[2].text
+      elsif tds.count == 2
+        namecol = 0
       elsif tds.count == 1
         namecol = 0
       end
-      name  = ->(col) { tds[col].css('a').first.text.tidy }
+      name  = ->(col) { tds[col].css('a').first.text.tidy rescue binding.pry }
       title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
       {
         name: name.(namecol),
@@ -118,8 +123,8 @@ def id_for(m)
 end
 
 terms = {
-  by_area: [ 25, 17 ],
-  four_column: [ 24 ],
+  by_area: [ 25 ],
+  four_column: [ 24, 17 ],
   three_column: [ 23, 22, 21, 20, 19, 18, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
   single_party: [ 7, 6, 5, 4, 3, 2, 1 ],
 }
@@ -167,11 +172,12 @@ end
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
-    url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_1._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 1
-    warn url
+    # url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_1._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 1
+    # warn url
     data = Parser.new(url: url).send(meth).map { |m| 
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m)) 
     }
+    warn "#{t}: #{data.count}"
     data.find_all { |m| m[:party][/[0-9]/] }.each { |m| puts m.to_s.magenta }
     ScraperWiki.save_sqlite([:id, :area, :term], data)
   end
