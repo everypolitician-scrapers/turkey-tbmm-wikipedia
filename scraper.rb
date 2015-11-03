@@ -30,11 +30,11 @@ class Parser
   def by_area
     noko.xpath(".//table[.//th[2][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
       tds = tr.css('td')
-      {
+      data = {
         name: tds[0].css('a').first.text.tidy,
         wikipedia__tk: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
         area: tr.xpath('preceding::h2/span[@class="mw-headline"]').last.text,
-        party: tds[1].xpath('.//text()').first.text.tidy,
+        party: tds[2].xpath('.//text()').first.text.tidy,
       }
     end
   end
@@ -162,7 +162,8 @@ PARTY = {
 
 WARNED = Set.new
 def party_from(party)
-  found = PARTY.find { |id, ns| ns.include? party }
+  party = party.split(/\s*→\s*/).first if party.include? '→'
+  found = PARTY.find { |id, ns| ns.include? party } or binding.pry
   { 
     party_id: found.first.to_s,
     party: found.last.first,
@@ -173,7 +174,6 @@ terms.each do |meth, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
     # url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_1._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 1
-    # warn url
     data = Parser.new(url: url).send(meth).map { |m| 
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m)) 
     }
