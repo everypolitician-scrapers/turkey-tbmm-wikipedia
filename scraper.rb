@@ -39,10 +39,23 @@ class Parser
     end
   end
 
+  def by_area_twocol
+    noko.xpath(".//table[.//th[2][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
+      tds = tr.css('td')
+      party = tds[1].css('a').first.text.tidy rescue 'Bağımsız'
+      data = {
+        name: tds[0].css('a').first.text.tidy,
+        wikipedia__tk: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
+        area: tr.xpath('preceding::h2/span[@class="mw-headline"]').last.text,
+        party: party,
+      }
+    end
+  end
+
   # Four column: Area (spanned), Name, Colour (spanned), Party (spanned)
   def four_column
     area = party = ''
-    rows = noko.xpath(".//table[.//th[contains(.,'Siyasi')]]/tr[td]")
+    rows = noko.xpath(".//table[.//th[contains(.,'Siyasi')]][1]/tr[td]")
     raise "No rows" if rows.count.zero?
     rows.map do |tr|
       next if tr.text.to_s.empty?
@@ -124,8 +137,9 @@ end
 
 terms = {
   by_area: [ 25 ],
-  four_column: [ 24, 17 ],
-  three_column: [ 23, 22, 21, 20, 19, 18, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
+  by_area_twocol: [ 24 ],
+  four_column: [ 23, 22, 21, 20, 19, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
+  three_column: [ 18 ],
   single_party: [ 7, 6, 5, 4, 3, 2, 1 ],
 }
 
@@ -134,10 +148,12 @@ PARTY = {
   ANAP: ['Anavatan Partisi'],
   AP:  ['Adalet Partisi'],
   BBP: ['Büyük Birlik Partisi'],
+  BDP: ['Barış ve Demokrasi Partisi'],
   CGP: ['Cumhuriyetçi Güven Partisi', 'Güven Partisi'],
   CHP: ['Cumhuriyet Halk Partisi'],
   CKMP: ['Cumhuriyetçi Köylü Millet Partisi'],
   CMP: ['Cumhuriyetçi Millet Partisi'],
+  DBP: ['Demokratik Bölgeler Partisi'],
   DP46: ['Demokrat Parti'],
   DP70: ['Demokratik Parti'],
   DSP: ['Demokratik Sol Parti'],
@@ -147,6 +163,7 @@ PARTY = {
   HDP: ['Halkların Demokratik Partisi'],
   HP:  ['Halkçı Parti'],
   HP55:  ['Hürriyet Partisi'],
+  KADEP: ['Katılımcı Demokrasi Partisi'],
   MDP: ['Milliyetçi Demokrasi Partisi'],
   MHP: ['Milliyetçi Hareket Partisi'],
   MÇP: ['Milliyetçi Çalışma Partisi'],
@@ -173,8 +190,11 @@ end
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
+    warn url
     # url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_1._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 1
+    url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_19._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 19
     data = Parser.new(url: url).send(meth).map { |m| 
+      binding.pry if m[:party].to_s.empty?
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m)) 
     }
     warn "#{t}: #{data.count}"
