@@ -55,6 +55,7 @@ class Parser
   # Four column: Area (spanned), Name, Colour (spanned), Party (spanned)
   def four_column
     area = party = ''
+    noko.xpath(".//table[.//th[4][contains(.,'Değişim')]]").remove
     rows = noko.xpath(".//table[.//th[contains(.,'Siyasi')]][1]/tr[td]")
     raise "No rows" if rows.count.zero?
     rows.map do |tr|
@@ -138,7 +139,7 @@ end
 terms = {
   by_area: [ 25 ],
   by_area_twocol: [ 24 ],
-  four_column: [ 23, 22, 21, 20, 19, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
+  four_column: [ 26, 23, 22, 21, 20, 19, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
   three_column: [ 18 ],
   single_party: [ 7, 6, 5, 4, 3, 2, 1 ],
 }
@@ -190,9 +191,7 @@ end
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
-    warn url
-    # url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_1._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 1
-    url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_19._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 19
+    url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_24._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 24
     data = Parser.new(url: url).send(meth).map { |m| 
       binding.pry if m[:party].to_s.empty?
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m)) 
