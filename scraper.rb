@@ -191,7 +191,6 @@ end
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
-    url = 'https://tr.wikipedia.org/w/index.php?title=TBMM_24._d%C3%B6nem_milletvekilleri_listesi&stable=0' if t == 24
     data = Parser.new(url: url).send(meth).map { |m| 
       binding.pry if m[:party].to_s.empty?
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m)) 
