@@ -188,6 +188,7 @@ def party_from(party)
   }
 end
 
+ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
 terms.each do |meth, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
