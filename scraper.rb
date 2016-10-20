@@ -32,7 +32,7 @@ class Parser
       tds = tr.css('td')
       data = {
         name: tds[0].css('a').first.text.tidy,
-        wikipedia__tk: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
+        wikipedia__tr: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
         area: tr.xpath('preceding::h2/span[@class="mw-headline"]').last.text,
         party: tds[2].xpath('.//text()').first.text.tidy,
       }
@@ -45,7 +45,7 @@ class Parser
       party = tds[1].css('a').first.text.tidy rescue 'Bağımsız'
       data = {
         name: tds[0].css('a').first.text.tidy,
-        wikipedia__tk: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
+        wikipedia__tr: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
         area: tr.xpath('preceding::h2/span[@class="mw-headline"]').last.text,
         party: party,
       }
@@ -77,7 +77,7 @@ class Parser
       title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
       {
         name: name.(namecol),
-        wikipedia__tk: title.(namecol),
+        wikipedia__tr: title.(namecol),
         area: area,
         party: party,
       }
@@ -101,7 +101,7 @@ class Parser
       title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
       {
         name: name.(namecol),
-        wikipedia__tk: title.(namecol),
+        wikipedia__tr: title.(namecol),
         area: area,
         party: party,
       }
@@ -123,7 +123,7 @@ class Parser
       title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
       {
         name: name.(namecol),
-        wikipedia__tk: title.(namecol),
+        wikipedia__tr: title.(namecol),
         area: area,
         party: party,
       }
@@ -133,7 +133,7 @@ class Parser
 end
 
 def id_for(m)
-  [m[:wikipedia__tk], m[:name]].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/,'_')
+  [m[:wikipedia__tr], m[:name]].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/,'_')
 end
 
 terms = {
