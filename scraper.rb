@@ -62,9 +62,9 @@ class Parser
       next if tr.text.to_s.empty?
       tds = tr.css('td')
       if tds.count == 4
-        area = tds[0].text 
+        area = tds[0].text
         namecol = 1
-        party = tds[3].text 
+        party = tds[3].text
       elsif tds.count == 3
         namecol = 0
         party = tds[2].text
@@ -90,7 +90,7 @@ class Parser
     noko.xpath(".//table[.//th[3][contains(.,'Siyasi parti')]][1]/tr[td]").map do |tr|
       tds = tr.css('td')
       if tds.count == 3
-        area = tds[0].text  
+        area = tds[0].text
         namecol = 1
         party = tds[2].xpath('.//text()').first.text.tidy
       elsif tds.count == 2
@@ -114,7 +114,7 @@ class Parser
     noko.xpath(".//table[.//th[1][contains(.,'Seçim Bölgesi')]][1]/tr[td]").map do |tr|
       tds = tr.css('td')
       if tds.count == 2
-        area = tds[0].text 
+        area = tds[0].text
         namecol = 1
       else
         namecol = 0
@@ -129,7 +129,6 @@ class Parser
       }
     end
   end
-
 end
 
 def id_for(m)
@@ -144,7 +143,7 @@ terms = {
   single_party: [ 7, 6, 5, 4, 3, 2, 1 ],
 }
 
-PARTY = { 
+PARTY = {
   AKP: ['Adalet ve Kalkınma Partisi'],
   ANAP: ['Anavatan Partisi'],
   AP:  ['Adalet Partisi'],
@@ -158,7 +157,7 @@ PARTY = {
   DP46: ['Demokrat Parti'],
   DP70: ['Demokratik Parti'],
   DSP: ['Demokratik Sol Parti'],
-  DTP: ['Demokratik Türkiye Partisi'], 
+  DTP: ['Demokratik Türkiye Partisi'],
   DYP: ['Doğru Yol Partisi'],
   FP:  ['Fazilet Partisi'],
   HDP: ['Halkların Demokratik Partisi'],
@@ -182,7 +181,7 @@ WARNED = Set.new
 def party_from(party)
   party = party.split(/\s*→\s*/).first if party.include? '→'
   found = PARTY.find { |id, ns| ns.include? party } or binding.pry
-  { 
+  {
     party_id: found.first.to_s,
     party: found.last.first,
   }
@@ -194,7 +193,7 @@ terms.each do |meth, ts|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
     data = Parser.new(url: url).send(meth).map { |m| 
       binding.pry if m[:party].to_s.empty?
-      m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m)) 
+      m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m))
     }
     warn "#{t}: #{data.count}"
     data.find_all { |m| m[:party][/[0-9]/] }.each { |m| puts m.to_s.magenta }
