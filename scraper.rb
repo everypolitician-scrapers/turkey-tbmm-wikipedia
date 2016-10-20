@@ -189,10 +189,11 @@ def party_from(party)
 end
 
 ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
-terms.each do |meth, ts|
+terms.each do |method, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
-    data = Parser.new(url: url).send(meth).map { |m| 
+    parser = Parser.new(url: url)
+    data = parser.send(method).map { |m|
       binding.pry if m[:party].to_s.empty?
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m)) 
     }
