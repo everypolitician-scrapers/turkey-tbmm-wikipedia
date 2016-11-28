@@ -6,10 +6,13 @@ require 'mediawiki_api'
 require 'nokogiri'
 require 'open-uri'
 require 'scraperwiki'
+require 'require_all'
 
 require 'pry'
 require 'open-uri/cached'
 OpenURI::Cache.cache_path = '.cache'
+
+require_rel 'lib'
 
 class String
   def tidy
@@ -27,107 +30,30 @@ class Parser
     @noko ||= Nokogiri::HTML(open(@url).read)
   end
 
+  def response
+    @response ||= Scraped::Request.new(url: @url).response
+  end
+
   def by_area
-    noko.xpath(".//table[.//th[2][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
-      tds = tr.css('td')
-      data = {
-        name: tds[0].css('a').first.text.tidy,
-        wikipedia__tr: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
-        area: tr.xpath('preceding::h2/span[@class="mw-headline"]').last.text,
-        party: tds[2].xpath('.//text()').first.text.tidy,
-      }
-    end
+    TermByAreaPage.new(response: response).members
   end
 
   def by_area_twocol
-    noko.xpath(".//table[.//th[2][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
-      tds = tr.css('td')
-      party = tds[1].css('a').first.text.tidy rescue 'Bağımsız'
-      data = {
-        name: tds[0].css('a').first.text.tidy,
-        wikipedia__tr: tds[0].xpath('a[not(@class="new")]/@title').text.strip,
-        area: tr.xpath('preceding::h2/span[@class="mw-headline"]').last.text,
-        party: party,
-      }
-    end
+    TermByAreaTwocolPage.new(response: response).members
   end
 
   # Four column: Area (spanned), Name, Colour (spanned), Party (spanned)
   def four_column
-    area = party = ''
-    noko.xpath(".//table[.//th[4][contains(.,'Değişim')]]").remove
-    rows = noko.xpath(".//table[.//th[contains(.,'Siyasi')]][1]/tr[td]")
-    raise "No rows" if rows.count.zero?
-    rows.map do |tr|
-      next if tr.text.to_s.empty?
-      tds = tr.css('td')
-      if tds.count == 4
-        area = tds[0].text
-        namecol = 1
-        party = tds[3].text
-      elsif tds.count == 3
-        namecol = 0
-        party = tds[2].text
-      elsif tds.count == 2
-        namecol = 0
-      elsif tds.count == 1
-        namecol = 0
-      end
-      name  = ->(col) { tds[col].css('a').first.text.tidy rescue binding.pry }
-      title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
-      {
-        name: name.(namecol),
-        wikipedia__tr: title.(namecol),
-        area: area,
-        party: party,
-      }
-    end
+    TermFourColumnPage.new(response: response).members
   end
 
   # Three column: Area (spanned), Name, Party (unspanned)
   def three_column
-    area = party = ''
-    noko.xpath(".//table[.//th[3][contains(.,'Siyasi parti')]][1]/tr[td]").map do |tr|
-      tds = tr.css('td')
-      if tds.count == 3
-        area = tds[0].text
-        namecol = 1
-        party = tds[2].xpath('.//text()').first.text.tidy
-      elsif tds.count == 2
-        namecol = 0
-        party = tds[1].xpath('.//text()').first.text.tidy
-      end
-      name  = ->(col) { tds[col].css('a').first.text.tidy }
-      title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
-      {
-        name: name.(namecol),
-        wikipedia__tr: title.(namecol),
-        area: area,
-        party: party,
-      }
-    end
+    TermThreeColumnPage.new(response: response).members
   end
 
   def single_party
-    area = ''
-    party = 'Cumhuriyet Halk Partisi'
-    noko.xpath(".//table[.//th[1][contains(.,'Seçim Bölgesi')]][1]/tr[td]").map do |tr|
-      tds = tr.css('td')
-      if tds.count == 2
-        area = tds[0].text
-        namecol = 1
-      else
-        namecol = 0
-      end
-      name  = ->(col) { tds[col].css('a').first.text.tidy }
-      title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
-      {
-        name: name.(namecol),
-        wikipedia__tr: title.(namecol),
-        area: area,
-        party: party,
-      }
-    end
+    TermSinglePartyPage.new(response: response).members
   end
 end
 
