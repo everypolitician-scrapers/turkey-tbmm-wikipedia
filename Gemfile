@@ -4,6 +4,8 @@
 
 source "https://rubygems.org"
 
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
+
 ruby "2.3.3"
 
 gem "scraperwiki", git: "https://github.com/openaustralia/scraperwiki-ruby.git", branch: "morph_defaults"
@@ -15,3 +17,4 @@ gem "open-uri-cached"
 gem "fuzzy_match"
 gem 'wikidata-client', '~> 0.0.7', require: 'wikidata'
 gem 'mediawiki_api'
+gem 'scraped', github: 'everypolitician/scraped'

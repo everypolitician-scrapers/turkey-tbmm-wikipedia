@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/everypolitician/scraped.git
+  revision: aabdf259f6cc2f746b50352e078a9141450e8d6e
+  specs:
+    scraped (0.1.0)
+      field_serializer
+      nokogiri
+      require_all
+
+GIT
   remote: https://github.com/openaustralia/scraperwiki-ruby.git
   revision: fc50176812505e463077d5c673d504a6a234aa78
   branch: morph_defaults
@@ -23,6 +32,7 @@ GEM
       http-cookie (~> 1.0.0)
     faraday_middleware (0.10.0)
       faraday (>= 0.7.4, < 0.10)
+    field_serializer (0.2.0)
     fuzzy_match (2.1.0)
     hashie (3.4.2)
     http-cookie (1.0.2)
@@ -41,6 +51,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    require_all (1.3.3)
     slop (3.6.0)
     sqlite3 (1.3.10)
     sqlite_magic (0.0.3)
@@ -65,6 +76,7 @@ DEPENDENCIES
   nokogiri
   open-uri-cached
   pry
+  scraped!
   scraperwiki!
   wikidata-client (~> 0.0.7)
 
