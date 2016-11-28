@@ -76,6 +76,7 @@ DEPENDENCIES
   nokogiri
   open-uri-cached
   pry
+  require_all
   scraped!
   scraperwiki!
   wikidata-client (~> 0.0.7)

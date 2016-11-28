@@ -18,3 +18,4 @@ gem "fuzzy_match"
 gem 'wikidata-client', '~> 0.0.7', require: 'wikidata'
 gem 'mediawiki_api'
 gem 'scraped', github: 'everypolitician/scraped'
+gem 'require_all'
