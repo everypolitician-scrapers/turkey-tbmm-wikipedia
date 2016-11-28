@@ -20,53 +20,16 @@ class String
   end
 end
 
-class Parser
-
-  def initialize(h)
-    @url = h[:url]
-  end
-
-  def noko
-    @noko ||= Nokogiri::HTML(open(@url).read)
-  end
-
-  def response
-    @response ||= Scraped::Request.new(url: @url).response
-  end
-
-  def by_area
-    TermByAreaPage.new(response: response).members
-  end
-
-  def by_area_twocol
-    TermByAreaTwocolPage.new(response: response).members
-  end
-
-  # Four column: Area (spanned), Name, Colour (spanned), Party (spanned)
-  def four_column
-    TermFourColumnPage.new(response: response).members
-  end
-
-  # Three column: Area (spanned), Name, Party (unspanned)
-  def three_column
-    TermThreeColumnPage.new(response: response).members
-  end
-
-  def single_party
-    TermSinglePartyPage.new(response: response).members
-  end
-end
-
 def id_for(m)
   [m[:wikipedia__tr], m[:name]].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/,'_')
 end
 
 terms = {
-  by_area: [ 25 ],
-  by_area_twocol: [ 24 ],
-  four_column: [ 26, 23, 22, 21, 20, 19, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
-  three_column: [ 18 ],
-  single_party: [ 7, 6, 5, 4, 3, 2, 1 ],
+  TermByAreaPage => [ 25 ],
+  TermByAreaTwocolPage => [ 24 ],
+  TermFourColumnPage => [ 26, 23, 22, 21, 20, 19, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
+  TermThreeColumnPage => [ 18 ],
+  TermSinglePartyPage => [ 7, 6, 5, 4, 3, 2, 1 ],
 }
 
 PARTY = {
@@ -114,10 +77,11 @@ def party_from(party)
 end
 
 ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
-terms.each do |meth, ts|
+terms.each do |klass, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
-    data = Parser.new(url: url).send(meth).map { |m| 
+    response = Scraped::Request.new(url: url).response
+    data = klass.new(response: response).members.map { |m| 
       binding.pry if m[:party].to_s.empty?
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m))
     }
