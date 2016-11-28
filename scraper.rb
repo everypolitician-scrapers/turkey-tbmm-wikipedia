@@ -66,7 +66,6 @@ PARTY = {
   ind: ['Bağımsız'],
 }
 
-WARNED = Set.new
 def party_from(party)
   party = party.split(/\s*→\s*/).first if party.include? '→'
   found = PARTY.find { |id, ns| ns.include? party } or binding.pry
