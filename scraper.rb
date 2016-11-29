@@ -108,6 +108,36 @@ class Parser
     end
   end
 
+  # Four columns: Area (spanned), Name, Empty, Party (spanned)
+  def four_column_party_spanned
+    area = party = ''
+    ['Kilis', 'Kocaeli'].map do |province|
+      noko.xpath("//h2[span[contains(@id, '#{province}' )]]/following::table[1]/tr[td]").map do |tr|
+        tds = tr.css('td')
+        if tds.count == 4
+          area = tds[0].text
+          namecol = 1
+          party = tds[3].text
+        elsif tds.count == 3
+          namecol = 0
+          party = tds[2].text
+        elsif tds.count == 2
+          namecol = 0
+        elsif tds.count == 1
+          namecol = 0
+        end
+        name  = ->(col) { tds[col].css('a').first.text.tidy }
+        title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
+        {
+          name: name.(namecol),
+          wikipedia__tr: title.(namecol),
+          area: area,
+          party: party,
+        }
+      end
+    end.flatten
+  end
+
   def single_party
     area = ''
     party = 'Cumhuriyet Halk Partisi'
@@ -138,6 +168,7 @@ end
 terms = {
   by_area: [ 25 ],
   by_area_twocol: [ 24 ],
+  four_column_party_spanned: [ 24 ],
   four_column: [ 26, 23, 22, 21, 20, 19, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
   three_column: [ 18 ],
   single_party: [ 7, 6, 5, 4, 3, 2, 1 ],
@@ -188,10 +219,11 @@ def party_from(party)
 end
 
 ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
-terms.each do |meth, ts|
+terms.each do |method, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
-    data = Parser.new(url: url).send(meth).map { |m| 
+    parser = Parser.new(url: url)
+    data = parser.send(method).map { |m|
       binding.pry if m[:party].to_s.empty?
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m))
     }
