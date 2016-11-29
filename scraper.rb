@@ -79,7 +79,7 @@ ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
 terms.each do |klass, ts|
   ts.each do |t|
     url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
-    response = Scraped::Request.new(url: url).response
+    response = Scraped::Request.new(url: url).response(decorators: [UnspanAllTables])
     data = klass.new(response: response).members.map { |m| 
       binding.pry if m[:party].to_s.empty?
       m.merge(party_from(m[:party])).merge(term: t, source: url, id: id_for(m))
