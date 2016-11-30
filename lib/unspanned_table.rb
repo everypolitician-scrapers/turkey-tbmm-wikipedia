@@ -6,9 +6,8 @@ class UnspannedTable
     @original = noko_table
   end
 
-  def transformed
-    original.children = reparsed.map { |c| '<tr>' + c.map(&:to_html).join + '</tr>' }.join
-    original
+  def children
+    reparsed.map { |c| '<tr>' + c.map(&:to_html).join + '</tr>' }.join
   end
 
   private
@@ -40,7 +39,7 @@ class UnspanAllTables < Scraped::Response::Decorator
   def body
     Nokogiri::HTML(super).tap do |doc|
       doc.css('table').each do |table|
-        table.children = UnspannedTable.new(table).transformed.children
+        table.children = UnspannedTable.new(table).children
       end
     end.to_s
   end
