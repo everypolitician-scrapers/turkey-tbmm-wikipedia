@@ -4,7 +4,7 @@ class TermFourColumnPage < Scraped::HTML
 
   class Member < Scraped::HTML
     field :name do
-      tds[1].css('a').first.text.tidy rescue binding.pry
+      tds[1].css('a').first.text.tidy
     end
 
     field :wikipedia__tr do
