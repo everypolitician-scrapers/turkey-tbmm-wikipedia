@@ -1,3 +1,6 @@
+require 'nokogiri'
+require 'scraped'
+
 class UnspannedTable
   def initialize(noko_table)
     @original = noko_table
@@ -32,10 +35,6 @@ class UnspannedTable
     grid
   end
 end
-
-require 'nokogiri'
-require 'scraped'
-require_relative 'unspanned_table'
 
 class UnspanAllTables < Scraped::Response::Decorator
   def body
