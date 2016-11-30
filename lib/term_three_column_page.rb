@@ -1,24 +1,34 @@
 class TermThreeColumnPage < Scraped::HTML
+  decorator UnspanAllTables
+
+  class Member < Scraped::HTML
+    field :name do
+      tds[1].css('a').first.text.tidy
+    end
+
+    field :wikipedia__tr do
+      tds[1].xpath('a[not(@class="new")]/@title').text.strip
+    end
+
+    field :area do
+      tds[0].text.tidy
+    end
+
+    field :party do
+      tds[2].xpath('.//text()').first.text.tidy rescue ''
+    end
+
+    private
+
+    def tds
+      @tds ||= noko.css('td')
+    end
+  end
+
   field :members do
     area = party = ''
     noko.xpath(".//table[.//th[3][contains(.,'Siyasi parti')]][1]/tr[td]").map do |tr|
-      tds = tr.css('td')
-      if tds.count == 3
-        area = tds[0].text
-        namecol = 1
-        party = tds[2].xpath('.//text()').first.text.tidy
-      elsif tds.count == 2
-        namecol = 0
-        party = tds[1].xpath('.//text()').first.text.tidy
-      end
-      name  = ->(col) { tds[col].css('a').first.text.tidy }
-      title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
-      {
-        name: name.(namecol),
-        wikipedia__tr: title.(namecol),
-        area: area,
-        party: party,
-      }
+      Member.new(response: response, noko: tr).to_h
     end
   end
 end
