@@ -1,47 +1,28 @@
 class TermFourColumnPage < Scraped::HTML
+  decorator RemoveUnwantedTable
+  decorator UnspanAllTables
+
   class Member < Scraped::HTML
     field :name do
-      tds[namecol].css('a').first.text.tidy
+      tds[1].css('a').first.text.tidy rescue binding.pry
     end
 
     field :wikipedia__tr do
-      tds[namecol].xpath('a[not(@class="new")]/@title').text.strip
+      tds[1].xpath('a[not(@class="new")]/@title').text.strip
     end
 
     field :area do
-      if tds.count == 4
-        tds[0].text.tidy
-      else
-        ''
-      end
+      tds[0].text.tidy
     end
 
     field :party do
-      if tds.count == 4
-        tds[3].text
-      elsif tds.count == 3
-        tds[2].text
-      else
-        ''
-      end
+      tds[3] && tds[3].text.tidy
     end
 
     private
 
     def tds
       @tds ||= noko.css('td')
-    end
-
-    def namecol
-      if tds.count == 4
-        1
-      elsif tds.count == 3
-        0
-      elsif tds.count == 2
-        0
-      elsif tds.count == 1
-        0
-      end
     end
   end
 
