@@ -1,23 +1,31 @@
 class TermSinglePartyPage < Scraped::HTML
+  decorator UnspanAllTables
+
+  class Member < Scraped::HTML
+    field :name do
+      tds[1].css('a').first.text.tidy
+    end
+
+    field :wikipedia__tr do
+      tds[1].xpath('a[not(@class="new")]/@title').text.strip
+    end
+
+    field :area do
+      tds[0].text.tidy
+    end
+
+    field :party do
+      'Cumhuriyet Halk Partisi'
+    end
+
+    def tds
+      @tds ||= noko.css('td')
+    end
+  end
+
   field :members do
-    area = ''
-    party = 'Cumhuriyet Halk Partisi'
     noko.xpath(".//table[.//th[1][contains(.,'Seçim Bölgesi')]][1]/tr[td]").map do |tr|
-      tds = tr.css('td')
-      if tds.count == 2
-        area = tds[0].text
-        namecol = 1
-      else
-        namecol = 0
-      end
-      name  = ->(col) { tds[col].css('a').first.text.tidy }
-      title = ->(col) { tds[col].xpath('a[not(@class="new")]/@title').text.strip }
-      {
-        name: name.(namecol),
-        wikipedia__tr: title.(namecol),
-        area: area,
-        party: party,
-      }
+      Member.new(response: response, noko: tr).to_h
     end
   end
 end
