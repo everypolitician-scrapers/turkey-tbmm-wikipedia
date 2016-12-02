@@ -26,7 +26,6 @@ class TermThreeColumnPage < Scraped::HTML
   end
 
   field :members do
-    area = party = ''
     noko.xpath(".//table[.//th[3][contains(.,'Siyasi parti')]][1]/tr[td]").map do |tr|
       Member.new(response: response, noko: tr).to_h
     end
