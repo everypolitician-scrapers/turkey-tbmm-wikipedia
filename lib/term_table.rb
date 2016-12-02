@@ -11,7 +11,7 @@ class TermTable < Scraped::HTML
 
   field :members do
     return [] unless row_class
-    rows.map { |row| row_class.new(response: response, noko: row).to_h }
+    rows.map { |row| row_class.new(response: response, noko: row) }
   end
 
   private
