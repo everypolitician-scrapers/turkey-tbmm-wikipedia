@@ -14,11 +14,11 @@ module TermTableRow
       tds[0].text.tidy
     end
 
-    field :party do
+    private
+
+    def party_name
       tds[3] && tds[3].text.tidy
     end
-
-    private
 
     def tds
       @tds ||= noko.css('td')

@@ -14,11 +14,11 @@ module TermTableRow
       noko.xpath('preceding::h2/span[@class="mw-headline"]').last.text
     end
 
-    field :party do
+    private
+
+    def party_name
       tds[2].xpath('.//text()').first.text.tidy
     end
-
-    private
 
     def tds
       noko.css('td')

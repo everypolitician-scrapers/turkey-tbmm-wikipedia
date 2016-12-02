@@ -14,7 +14,9 @@ module TermTableRow
       tds[0].text.tidy
     end
 
-    field :party do
+    private
+
+    def party_name
       'Cumhuriyet Halk Partisi'
     end
 
