@@ -8,8 +8,6 @@ class TermPage < Scraped::HTML
   end
 
   field :members do
-    tables.flat_map do |table|
-      table.members
-    end
+    tables.flat_map { |table| table.members }
   end
 end
