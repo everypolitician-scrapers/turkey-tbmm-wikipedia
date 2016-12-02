@@ -1,4 +1,6 @@
 class TermByAreaPage < Scraped::HTML
+  decorator UnspanAllTables
+
   class Member < Scraped::HTML
     field :name do
       tds[0].css('a').first.text.tidy
