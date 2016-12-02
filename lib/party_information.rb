@@ -54,13 +54,7 @@ class PartyInformation
   end
 
   def party
-    @party ||=
-      begin
-        if party_name.include? '→'
-          party_name.split(/\s*→\s*/).first
-        else
-          party_name
-        end
-      end
+    return party_name unless party_name.include? '→'
+    party_name.split(/\s*→\s*/).first
   end
 end
