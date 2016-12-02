@@ -20,28 +20,12 @@ class String
   end
 end
 
-def id_for(m)
-  [m[:wikipedia__tr], m[:name]].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/,'_')
-end
-
-terms = {
-  TermByAreaPage => [ 25 ],
-  TermByAreaTwocolPage => [ 24 ],
-  TermFourColumnPage => [ 26, 23, 22, 21, 20, 19, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8 ],
-  TermThreeColumnPage => [ 18 ],
-  TermSinglePartyPage => [ 7, 6, 5, 4, 3, 2, 1 ],
-}
-
 ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
-terms.each do |klass, ts|
-  ts.each do |t|
-    url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
-    response = Scraped::Request.new(url: url).response
-    data = klass.new(response: response).members.map { |m| 
-      party_info = PartyInformation.new(m[:party])
-      m.merge(party: party_info.name, party_id: party_info.id, term: t, source: url, id: id_for(m))
-    }
-    warn "#{t}: #{data.count}"
-    ScraperWiki.save_sqlite([:id, :area, :term], data)
-  end
+
+26.downto(1) do |t|
+  url = "https://tr.wikipedia.org/wiki/TBMM_#{t}._d%C3%B6nem_milletvekilleri_listesi"
+  response = Scraped::Request.new(url: url).response
+  data = TermPage.new(response: response).members
+  warn "#{t}: #{data.count}"
+  ScraperWiki.save_sqlite([:id, :area, :term], data.map { |m| m.to_h.merge(term: t) })
 end
