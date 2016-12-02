@@ -1,5 +1,5 @@
-module TermTable
-  class ByArea < Base
+module TermTableRow
+  class ByAreaTwocol < Base
     class Member < Scraped::HTML
       field :name do
         tds[0].css('a').first.text.tidy
@@ -14,7 +14,7 @@ module TermTable
       end
 
       field :party do
-        tds[2].xpath('.//text()').first.text.tidy
+        tds[1].css('a').first.text.tidy rescue 'Bağımsız'
       end
 
       private
@@ -24,6 +24,6 @@ module TermTable
       end
     end
 
-    expected_headers ["Milletvekili", "Siyasi Parti", "Siyasi Parti"]
+    expected_headers ["Milletvekili", "Seçildiği Siyasi Parti"]
   end
 end

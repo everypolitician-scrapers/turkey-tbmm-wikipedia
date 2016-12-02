@@ -1,5 +1,5 @@
-module TermTable
-  class SingleParty < Base
+module TermTableRow
+  class ThreeColumn < Base
     class Member < Scraped::HTML
       field :name do
         tds[1].css('a').first.text.tidy
@@ -14,14 +14,16 @@ module TermTable
       end
 
       field :party do
-        'Cumhuriyet Halk Partisi'
+        tds[2].xpath('.//text()').first.text.tidy rescue ''
       end
+
+      private
 
       def tds
         @tds ||= noko.css('td')
       end
     end
 
-    expected_headers ['Seçim Bölgesi', 'Mebus']
+    expected_headers ["Seçim Bölgesi", "Milletvekili", "Siyasi parti"]
   end
 end

@@ -1,5 +1,5 @@
-module TermTable
-  class ThreeColumn < Base
+module TermTableRow
+  class FourColumn < Base
     class Member < Scraped::HTML
       field :name do
         tds[1].css('a').first.text.tidy
@@ -14,7 +14,7 @@ module TermTable
       end
 
       field :party do
-        tds[2].xpath('.//text()').first.text.tidy rescue ''
+        tds[3] && tds[3].text.tidy
       end
 
       private
@@ -24,6 +24,6 @@ module TermTable
       end
     end
 
-    expected_headers ["Seçim Bölgesi", "Milletvekili", "Siyasi parti"]
+    expected_headers ["Seçim Bölgesi", "Milletvekili", "Siyasi Parti", "Siyasi Parti"]
   end
 end
