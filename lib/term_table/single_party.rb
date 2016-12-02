@@ -1,7 +1,5 @@
 module TermTable
-  class SingleParty < Scraped::HTML
-    decorator UnspanAllTables
-
+  class SingleParty < Base
     class Member < Scraped::HTML
       field :name do
         tds[1].css('a').first.text.tidy
@@ -24,10 +22,6 @@ module TermTable
       end
     end
 
-    field :members do
-      noko.xpath(".//table[.//th[1][contains(.,'Seçim Bölgesi')]][1]/tr[td]").map do |tr|
-        Member.new(response: response, noko: tr).to_h
-      end
-    end
+    expected_headers ['Seçim Bölgesi', 'Mebus']
   end
 end

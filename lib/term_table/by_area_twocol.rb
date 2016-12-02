@@ -1,7 +1,5 @@
 module TermTable
-  class ByAreaTwocol < Scraped::HTML
-    decorator UnspanAllTables
-
+  class ByAreaTwocol < Base
     class Member < Scraped::HTML
       field :name do
         tds[0].css('a').first.text.tidy
@@ -26,10 +24,6 @@ module TermTable
       end
     end
 
-    field :members do
-      noko.xpath(".//table[.//th[2][contains(.,'Siyasi Parti')]]/tr[td]").map do |tr|
-        Member.new(response: response, noko: tr).to_h
-      end
-    end
+    expected_headers ["Milletvekili", "Seçildiği Siyasi Parti"]
   end
 end
