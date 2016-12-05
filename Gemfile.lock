@@ -1,10 +1,4 @@
 GIT
-  remote: https://github.com/everypolitician/field_serializer.git
-  revision: a09f9a73655558190e169d5cae2738a9006fd833
-  specs:
-    field_serializer (0.2.0)
-
-GIT
   remote: https://github.com/everypolitician/scraped.git
   revision: 3805fcf7eee8ceeded70cb3d0c9dd074e910855b
   branch: class-level-decorators
@@ -39,6 +33,7 @@ GEM
       http-cookie (~> 1.0.0)
     faraday_middleware (0.10.0)
       faraday (>= 0.7.4, < 0.10)
+    field_serializer (0.3.0)
     fuzzy_match (2.1.0)
     hashie (3.4.2)
     http-cookie (1.0.2)
@@ -77,7 +72,6 @@ PLATFORMS
 DEPENDENCIES
   colorize
   execjs
-  field_serializer!
   fuzzy_match
   mediawiki_api
   nokogiri
