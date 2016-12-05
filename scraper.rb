@@ -1,10 +1,4 @@
-#!/bin/env ruby
-# encoding: utf-8
-
-require 'colorize'
-require 'mediawiki_api'
-require 'nokogiri'
-require 'open-uri'
+require 'bundler/setup'
 require 'scraperwiki'
 require 'require_all'
 
