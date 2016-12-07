@@ -1,4 +1,6 @@
 class TermPage < Scraped::HTML
+  # See comment in term_18_temporary_fix.rb for more details.
+  decorator Term18TemporaryFix
   decorator UnspanAllTables
 
   field :tables do
