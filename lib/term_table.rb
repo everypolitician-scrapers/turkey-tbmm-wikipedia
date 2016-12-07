@@ -22,7 +22,7 @@ class TermTable < Scraped::HTML
 
   def row_class
     @row_class ||= self.class.row_classes.find do |klass|
-      klass.expected_headers == headers
+      klass.can_handle?(headers)
     end
   end
 

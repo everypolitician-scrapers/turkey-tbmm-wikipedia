@@ -4,6 +4,10 @@ module TermTableRow
       @expected_headers ||= expected
     end
 
+    def self.can_handle?(headers)
+      expected_headers == headers
+    end
+
     field :id do
       [wikipedia__tr, name].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/,'_')
     end
