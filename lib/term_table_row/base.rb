@@ -5,7 +5,10 @@ module TermTableRow
     end
 
     def self.can_handle?(headers)
-      expected_headers == headers
+      expected_headers.zip(headers).all? do |expected, actual|
+        next unless actual
+        expected.match(actual.to_s)
+      end
     end
 
     field :id do
