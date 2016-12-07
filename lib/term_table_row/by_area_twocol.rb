@@ -1,6 +1,6 @@
 module TermTableRow
   class ByAreaTwocol < Base
-    expected_headers ["Milletvekili", "Seçildiği Siyasi Parti"]
+    expected_headers ["Milletvekili", /Siyasi Parti/]
 
     field :name do
       tds[0].css('a').first.text.tidy
