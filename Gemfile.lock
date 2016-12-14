@@ -1,7 +1,6 @@
 GIT
   remote: https://github.com/everypolitician/scraped.git
-  revision: 6d275f6d6e5cb252359402e0d61abcf80e02bc8b
-  branch: class-level-decorators
+  revision: ac8af28d581e10a6346e547a8c49001193815bed
   specs:
     scraped (0.1.0)
       field_serializer (>= 0.3.0)
