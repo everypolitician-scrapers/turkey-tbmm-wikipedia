@@ -8,6 +8,14 @@ GIT
       require_all
 
 GIT
+  remote: https://github.com/everypolitician/table_unspanner.git
+  revision: 6e37c8f64edd6eb976ff67a6f04776d01a5e5d51
+  branch: implementation
+  specs:
+    table_unspanner (0.1.0)
+      nokogiri
+
+GIT
   remote: https://github.com/openaustralia/scraperwiki-ruby.git
   revision: fc50176812505e463077d5c673d504a6a234aa78
   branch: morph_defaults
@@ -79,6 +87,7 @@ DEPENDENCIES
   require_all
   scraped!
   scraperwiki!
+  table_unspanner!
   wikidata-client (~> 0.0.7)
 
 RUBY VERSION
