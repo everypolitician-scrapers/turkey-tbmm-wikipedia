@@ -1,7 +1,8 @@
-require 'table_unspanner/scraped'
+require 'scraped'
+require_relative 'unspan_all_tables'
 
 class TermPage < Scraped::HTML
-  decorator TableUnspanner::Decorator
+  decorator UnspanAllTables
 
   field :tables do
     noko.xpath(".//table[.//th[contains(.,'Siyasi') or contains(.,'Seçim Bölgesi')]]").map do |table|
