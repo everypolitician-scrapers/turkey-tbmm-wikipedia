@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 module TermTableRow
   class ThreeColumn < Base
-    expected_headers ["Seçim Bölgesi", "Milletvekili", "Siyasi parti"]
+    expected_headers ['Seçim Bölgesi', 'Milletvekili', 'Siyasi parti']
 
     field :name do
       tds[1].css('a').first.text.tidy

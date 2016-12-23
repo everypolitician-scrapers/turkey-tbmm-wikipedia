@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 module TermTableRow
   class ByArea < Base
-    expected_headers ["Milletvekili", "Siyasi Parti", "Siyasi Parti"]
+    expected_headers ['Milletvekili', 'Siyasi Parti', 'Siyasi Parti']
 
     field :name do
       tds[0].css('a').first.text.tidy

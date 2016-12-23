@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'bundler/setup'
 require 'scraperwiki'
 require 'require_all'
@@ -10,7 +11,7 @@ require_rel 'lib'
 
 class String
   def tidy
-    self.gsub(/[[:space:]]+/, ' ').strip
+    gsub(/[[:space:]]+/, ' ').strip
   end
 end
 
@@ -24,5 +25,5 @@ ScraperWiki.sqliteexecute('DELETE FROM data') rescue nil
   response = Scraped::Request.new(url: url).response
   data = TermPage.new(response: response).members
   warn "#{t}: #{data.count}"
-  ScraperWiki.save_sqlite([:id, :area, :term], data.map { |m| m.to_h.merge(term: t) })
+  ScraperWiki.save_sqlite(%i(id area term), data.map { |m| m.to_h.merge(term: t) })
 end

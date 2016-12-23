@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module TermTableRow
   class Base < Scraped::HTML
     def self.expected_headers(expected = nil)
@@ -12,7 +13,7 @@ module TermTableRow
     end
 
     field :id do
-      [wikipedia__tr, name].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/,'_')
+      [wikipedia__tr, name].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/, '_')
     end
 
     field :source do

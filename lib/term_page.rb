@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'scraped'
 require_relative 'unspan_all_tables'
 
@@ -11,6 +12,6 @@ class TermPage < Scraped::HTML
   end
 
   field :members do
-    tables.flat_map { |table| table.members }
+    tables.flat_map(&:members)
   end
 end
