@@ -4,10 +4,6 @@ module TermTableRow
   class ByAreaTwocol < Base
     expected_headers ['Milletvekili', /Siyasi Parti/]
 
-    field :wikipedia__tr do
-      tds[0].xpath('a[not(@class="new")]/@title').text.strip
-    end
-
     field :area do
       noko.xpath('preceding::h2/span[@class="mw-headline"]').last.text
     end

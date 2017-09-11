@@ -21,6 +21,10 @@ module TermTableRow
       name_node.text.tidy
     end
 
+    field :wikipedia__tr do
+      name_cell.xpath('a[not(@class="new")]/@title').text.strip
+    end
+
     field :source do
       url.to_s
     end
