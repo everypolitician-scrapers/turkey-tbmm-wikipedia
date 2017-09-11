@@ -10,12 +10,6 @@ OpenURI::Cache.cache_path = '.cache'
 
 require_rel 'lib'
 
-class String
-  def tidy
-    gsub(/[[:space:]]+/, ' ').strip
-  end
-end
-
 ScraperWiki.sqliteexecute('DROP TABLE data') rescue nil
 
 26.downto(1) do |t|
