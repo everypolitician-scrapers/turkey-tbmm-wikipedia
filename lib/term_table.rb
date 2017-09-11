@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class TermTable < Scraped::HTML
   def self.row_classes
     @row_classes ||= [

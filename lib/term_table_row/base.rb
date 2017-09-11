@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module TermTableRow
   class Base < Scraped::HTML
     def self.expected_headers(expected = nil)

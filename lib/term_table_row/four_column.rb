@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module TermTableRow
   class FourColumn < Base
     expected_headers ['Seçim Bölgesi', 'Milletvekili', 'Siyasi Parti', 'Siyasi Parti']

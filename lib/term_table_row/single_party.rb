@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module TermTableRow
   class SingleParty < Base
     expected_headers ['Seçim Bölgesi', 'Mebus']

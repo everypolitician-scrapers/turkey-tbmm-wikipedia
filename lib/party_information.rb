@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class PartyInformation
   MAPPING = {
     AKP:   ['Adalet ve Kalkınma Partisi'],

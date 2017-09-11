@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'scraped'
 require_relative 'unspan_all_tables'
 

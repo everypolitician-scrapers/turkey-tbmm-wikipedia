@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'bundler/setup'
 require 'scraperwiki'
 require 'require_all'
@@ -23,5 +24,5 @@ ScraperWiki.sqliteexecute('DROP TABLE data') rescue nil
   response = Scraped::Request.new(url: url).response
   data = TermPage.new(response: response).members
   warn "#{t}: #{data.count}"
-  ScraperWiki.save_sqlite(%i(id area term), data.map { |m| m.to_h.merge(term: t) })
+  ScraperWiki.save_sqlite(%i[id area term], data.map { |m| m.to_h.merge(term: t) })
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module TermTableRow
   class ByArea < Base
     expected_headers ['Milletvekili', 'Siyasi Parti', 'Siyasi Parti']
