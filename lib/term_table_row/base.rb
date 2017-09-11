@@ -31,6 +31,10 @@ module TermTableRow
 
     private
 
+    def tds
+      noko.css('td')
+    end
+
     def party_info
       @party_info = PartyInformation.new(party_name)
     end

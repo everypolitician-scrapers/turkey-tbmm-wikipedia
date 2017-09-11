@@ -21,9 +21,5 @@ module TermTableRow
     def party_name
       tds[2].xpath('.//text()').first.text.tidy
     end
-
-    def tds
-      noko.css('td')
-    end
   end
 end

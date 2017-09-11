@@ -21,9 +21,5 @@ module TermTableRow
     def party_name
       'Cumhuriyet Halk Partisi'
     end
-
-    def tds
-      @tds ||= noko.css('td')
-    end
   end
 end

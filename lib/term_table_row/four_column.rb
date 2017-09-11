@@ -21,9 +21,5 @@ module TermTableRow
     def party_name
       tds[3] && tds[3].text.tidy
     end
-
-    def tds
-      @tds ||= noko.css('td')
-    end
   end
 end

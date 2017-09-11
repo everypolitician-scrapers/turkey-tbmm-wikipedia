@@ -21,9 +21,5 @@ module TermTableRow
     def party_name
       tds[1].css('a').first.text.tidy rescue 'Bağımsız'
     end
-
-    def tds
-      noko.css('td')
-    end
   end
 end
