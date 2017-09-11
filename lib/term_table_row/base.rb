@@ -21,6 +21,10 @@ module TermTableRow
       name_node.text.tidy
     end
 
+    field :wikidata do
+      name_node.attr('wikidata')
+    end
+
     field :wikipedia__tr do
       name_cell.xpath('a[not(@class="new")]/@title').text.strip
     end
