@@ -4,10 +4,6 @@ module TermTableRow
   class ByArea < Base
     expected_headers ['Milletvekili', 'Siyasi Parti', 'Siyasi Parti']
 
-    field :name do
-      tds[0].css('a').first.text.tidy
-    end
-
     field :wikipedia__tr do
       tds[0].xpath('a[not(@class="new")]/@title').text.strip
     end
@@ -17,6 +13,10 @@ module TermTableRow
     end
 
     private
+
+    def name_cell
+      tds[0]
+    end
 
     def party_name
       tds[2].xpath('.//text()').first.text.tidy

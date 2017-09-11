@@ -17,6 +17,10 @@ module TermTableRow
       [wikipedia__tr, name].find { |n| !n.to_s.empty? }.downcase.gsub(/[[:space:]]/, '_')
     end
 
+    field :name do
+      name_node.text.tidy
+    end
+
     field :source do
       url.to_s
     end
@@ -33,6 +37,10 @@ module TermTableRow
 
     def tds
       noko.css('td')
+    end
+
+    def name_node
+      name_cell.css('a').first
     end
 
     def party_info

@@ -4,10 +4,6 @@ module TermTableRow
   class SingleParty < Base
     expected_headers ['Seçim Bölgesi', 'Mebus']
 
-    field :name do
-      tds[1].css('a').first.text.tidy
-    end
-
     field :wikipedia__tr do
       tds[1].xpath('a[not(@class="new")]/@title').text.strip
     end
@@ -17,6 +13,10 @@ module TermTableRow
     end
 
     private
+
+    def name_cell
+      tds[1]
+    end
 
     def party_name
       'Cumhuriyet Halk Partisi'
