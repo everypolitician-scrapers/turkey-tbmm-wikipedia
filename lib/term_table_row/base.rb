@@ -26,7 +26,8 @@ module TermTableRow
     end
 
     field :wikipedia__tr do
-      name_cell.xpath('a[not(@class="new")]/@title').text.strip
+      return if name_node.attr('class') == 'new'
+      name_node.attr('title').tidy
     end
 
     field :source do
