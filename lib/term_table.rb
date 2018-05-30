@@ -8,6 +8,8 @@ class TermTable < Scraped::HTML
       TermTableRow::ByAreaTwocol,
       TermTableRow::ThreeColumn,
       TermTableRow::FourColumn,
+      TermTableRow::PartyChange,
+      TermTableRow::PartyChangeDouble,
     ]
   end
 
