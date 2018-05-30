@@ -15,7 +15,7 @@ module TermTableRow
     end
 
     def party_name
-      tds[3] && tds[3].text.tidy
+      tds[3]&.text&.tidy
     end
   end
 end

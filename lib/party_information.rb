@@ -44,7 +44,7 @@ class PartyInformation
   end
 
   def name
-    @name ||= match && match.last.first
+    @name ||= match&.last&.first
   end
 
   private
