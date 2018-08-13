@@ -20,6 +20,6 @@ module TermTableRow
   end
 
   class PartyChangeDouble < PartyChange
-    expected_headers ['Seçim Bölgesi', 'Siyasi Parti', 'Siyasi Parti', 'Milletvekili', 'Değişiklik', 'Değişiklik']
+    expected_headers ['Seçim Bölgesi', 'Siyasi Parti', 'Siyasi Parti', 'Milletvekili', /Değişikli/, /Değişikli/]
   end
 end
